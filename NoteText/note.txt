@@ -1,0 +1,85 @@
+tạo class fortis\Base\Block\Product\ProductList\NewList extends fortis\Base\Block\Product\ProductList\Featured
+_getProductCollection{
+	if (is_null($this->_productCollection))
+        {
+			$categoryID = $this->getCategoryId();
+			// if(in_array($_SERVER['HTTP_X_REAL_IP'],array('14.231.221.188'))){
+				// var_dump("Testttt"); 
+				// var_dump("<pre>"); 
+				// var_dump($categoryID); 
+				
+				// die();
+			// }
+            
+            if($categoryID)
+            {               
+                $category = $this->_categoryFactory->create();
+                $category->load($categoryID);
+                $collection = $category->getProductCollection(); // See #23
+
+                //Sort order parameters
+                $sortBy = $this->getSortBy(); //param: sort_by
+                if ($sortBy === NULL) //Param not set
+                {
+                    $sortBy = 'news_to_date';
+                }
+                $sortDirection = $this->getSortDirection(); //param: sort_direction
+                if ($sortDirection === NULL) //Param not set
+                {
+                    $sortDirection = 'DESC';
+                }
+                $collection->addAttributeToSort($sortBy, $sortDirection);
+				//$collection->addAttributeToSort('update_at', 'desc');
+            }
+            else
+            {
+                $collection = $this->_productCollection;
+            }
+            $this->_categoryLayerFactory
+                ->create()
+                ->prepareProductCollection($collection);
+            // ObjectManager::getInstance()
+            //     ->create('Magento\Catalog\Model\Layer')
+            //     ->prepareProductCollection($collection);
+            
+            if ($this->getIsRandom())
+            {
+                $collection->getSelect()->order('rand()');
+            }
+            $collection->addAttributeToFilter(
+                'news_from_date',
+				[
+                        'or' => [
+                            0 => ['date' => true, 'to' => $this->getEndOfDayDate()],
+                            1 => ['is' => new \Zend_Db_Expr('not null')],
+                        ]
+                    ],
+                'left'
+            )
+            ->addAttributeToFilter(
+                'news_to_date',
+				[
+                        'or' => [
+                            0 => ['date' => true, 'from' => $this->getStartOfDayDate()],
+                            1 => ['is' => new \Zend_Db_Expr('not null')],
+                        ]
+                    ],
+                'left'
+            );
+            $productCount = $this->getProductCount() ? $this->getProductCount() : 8;
+            $collection->setPage(1, $productCount)
+                ->load();
+            
+            $this->_productCollection = $collection;
+        }
+
+        return $this->_productCollection;
+	}
+}
+
+2,update new page:
+<block class="Magento\Framework\View\Element\Template" name="checkout_page_head_banner" template="Magento_Catalog::bannerimage.phtml">
+<arguments>
+        <argument name="default_image" xsi:type="string">https://www.3avape.com/media/_-970x560_3.jpg</argument>
+    </arguments>
+</block>
