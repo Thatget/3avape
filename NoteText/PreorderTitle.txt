@@ -1,0 +1,8 @@
+1,In: Bss\PreOrder\Block\PreOrderProduct;
+Create method: public function getTitleHtml();
+2,In Bss\Preorder\view\frontend\templates\preorder_product.phtml
+	-;$textTitle = $block->getTitleHtml();(27)
+	-;"titleText" : "<?= $textTitle; ?>"(46)
+3,In Bss\Preorder\view\frontend\web\js\index.js
+	-;instockOrPre_OrderText: '.product-info-price .product-info-stock-sku .stock span',
+	-;$(elemnt).parents(self.options.productPageContainer).find(self.options.instockOrPre_OrderText).text(self.options.titleText);(66)
