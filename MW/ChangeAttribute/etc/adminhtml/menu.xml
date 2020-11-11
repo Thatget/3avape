@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="MW_ChangeAttribute::change_attribute" title="Change Attribute" translate="title"
+             module="MW_ChangeAttribute" sortOrder="30" parent="Magento_Catalog::inventory"
+             action="changeattribute/attribute/edit"
+             resource="Magento_Catalog::products"/>
+    </menu>
+</config>
